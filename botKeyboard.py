@@ -1,4 +1,5 @@
 from telegram.ext import Updater,CommandHandler,MessageHandler,Filters
+from telegram import ReplyKeyboardMarkup
 import logging
 import settings
 import datetime
@@ -11,8 +12,10 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s',
 def greet_user(bot, update):
     logging.info('Users start')
     text = 'Вызван /start'
+    my_keyboard=ReplyKeyboardMarkup([['1','2','3','+','-'],['4','5','6','*','/'],['7','8','9','0','=']])
+    print(my_keyboard[2])
     print(text)
-    update.message.reply_text(text)
+    update.message.reply_text(text,reply_markup=my_keyboard)
 
 def talk_to_me(bot, update):
 
@@ -90,6 +93,8 @@ def planets(bot,update):
             update.message.reply_text('Pls enter the planet name after "/planet" like Mars, Jupiter, Venus e.t.c')    
     
 
+
+
 def main():
     mybot= Updater(settings.API_key,request_kwargs=settings.PROXY)
     
@@ -97,9 +102,9 @@ def main():
 
     dp=mybot.dispatcher
     dp.add_handler(CommandHandler('start', greet_user))
-    dp.add_handler(MessageHandler(Filters.text, talk_to_me))
     dp.add_handler(CommandHandler('planet',planets))
     dp.add_handler(CommandHandler('wordcount',wordcount))
+    dp.add_handler(MessageHandler(Filters.text, talk_to_me))
 
     mybot.start_polling()
     mybot.idle()
