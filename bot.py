@@ -1,4 +1,4 @@
-from telegram.ext import Updater,CommandHandler,MessageHandler,Filters
+from telegram.ext import Updater,CommandHandler,MessageHandler,Filters, RegexHandler
 import logging
 import settings
 import datetime
@@ -88,7 +88,10 @@ def planets(bot,update):
             ans=ephem.constellation(planet_position)[1]
             update.message.reply_text(ans)
         except(AttributeError):
-            update.message.reply_text('Pls enter the planet name after "/planet" like Mars, Jupiter, Venus e.t.c')    
+            update.message.reply_text('Pls enter the planet name after "/planet" like Mars, Jupiter, Venus e.t.c')   
+
+def next_full_moon(bot,update):
+    update.message.reply_text(ephem.next_full_moon(update.message.text[33::]))
     
 
 def main():
@@ -97,10 +100,11 @@ def main():
     logging.info('Bot started')
 
     dp=mybot.dispatcher
+    dp.add_handler(RegexHandler('^(Когда ближайшее полнолуние после)',next_full_moon))
     dp.add_handler(CommandHandler('start', greet_user))
-    dp.add_handler(MessageHandler(Filters.text, talk_to_me))
     dp.add_handler(CommandHandler('planet',planets))
     dp.add_handler(CommandHandler('wordcount',wordcount))
+    dp.add_handler(MessageHandler(Filters.text, talk_to_me))
 
     mybot.start_polling()
     mybot.idle()
