@@ -8,6 +8,7 @@ cities=['москва','анадырь','ростов на дону','урал',
 'архангельск','кишинев','волжский','иркутск','клязьма','астрахань','новгород','домодедово','омск']
 cities_new=['москва','анадырь','ростов на дону','урал','липецк','калининград','дмитров','волгоград','дзержинск','кострома',
 'архангельск','кишинев','волжский','иркутск','клязьма','астрахань','новгород','домодедово','омск']
+last_symbol=['first']
 
 
 
@@ -100,16 +101,17 @@ def next_full_moon(bot,update):
     update.message.reply_text(ephem.next_full_moon(update.message.text[33::]))
     
 def goroda(bot,update):
-    
+
     city_name=update.message.text[8::]
     city_name=city_name.lower()
 
     if city_name in cities:
-        if city_name in cities_new:
+        if city_name in cities_new and (last_symbol[-1]=='first' or last_symbol[-1]==city_name[0]):
             
             if city_name[len(city_name)-1]=='й' or city_name[len(city_name)-1]=='ь' or city_name[len(city_name)-1]=='ъ' or city_name[len(city_name)-1]=='ы':
                 for i in cities:
                     if i[0]==city_name[len(city_name)-2]:
+                        
                         answ=i
                         break
                     else:
@@ -117,6 +119,7 @@ def goroda(bot,update):
             else:
                 for i in cities:
                     if i[0]==city_name[len(city_name)-1]:
+                        
                         answ=i
                         break
                     else:
@@ -126,13 +129,16 @@ def goroda(bot,update):
                 cities_new.remove(answ)
                 cities_new.remove(city_name)
                 update.message.reply_text(answ)
+                if answ[-1]=='й' or answ[-1]=='ъ' or answ[-1]=='ь' or answ[-1]=='ы':
+                    last_symbol.append(answ[-2])
+                else:
+                    last_symbol.append(answ[-1])
                 
             else:
                 update.message.reply_text('Моя больше не знать ответов, ты победил')
                 
-
         else:
-            update.message.reply_text('Какой хитренький, уже было')
+            update.message.reply_text('Какой хитренький, уже было, ну или не с той буквы пишешь, нужно с: {}'.format(last_symbol[-1]))
     else:
         update.message.reply_text('Чёт не знаю такого города пока')
 
