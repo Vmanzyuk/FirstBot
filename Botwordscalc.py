@@ -4,6 +4,8 @@ import settings
 import datetime
 import ephem
 
+calcdict={'один':'1','два':'2','три':'3','четыре':'4','пять':'5','шесть':'6','девять':'9',
+'ноль':'0','умножить':'*','делить':'/','плюс':'+','минус':'-','сколько будет':'','на':'','и':'.'}
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO,
@@ -17,50 +19,56 @@ def greet_user(bot, update):
 
 def talk_to_me(bot, update):
 
-    user_text = update.message.text
-    user_text_wo= update.message.text[:len(update.message.text)-1]
-    plus_cord=user_text_wo.find('+')
-    minus_cord=user_text_wo.find('-')
-    divide_cord=user_text_wo.find('/')
-    multiply_cord=user_text_wo.find('*')
+    user_text=update.message.text.lower()
+    for i in calcdict:
+        user_text=user_text.replace(i,calcdict[i])
     
-    if not user_text.endswith('='):
-        update.message.reply_text('Expression must end with =')
-    elif plus_cord==-1 and minus_cord==-1 and divide_cord==-1 and multiply_cord==-1:
-        update.message.reply_text('Expression must be include + or - or / or *')
+    user_text=user_text.replace('восемь','8')
+    user_text=user_text.replace('семь','7')
+    user_text=user_text.replace(' ','')
+     
+    
+    plus_cord=user_text.find('+')
+    minus_cord=user_text.find('-')
+    divide_cord=user_text.find('/')
+    multiply_cord=user_text.find('*')
+    
+    
+    if plus_cord==-1 and minus_cord==-1 and divide_cord==-1 and multiply_cord==-1:
+        update.message.reply_text('Формат выражения: Сколько будет один плюс два или сколько будет три и два умножить на шесть и восемь')
     elif (user_text.count('+')+user_text.count('-')+user_text.count('*')+user_text.count('/'))>1:
-        update.message.reply_text('Pls enter one arithmetic sign')
+        update.message.reply_text('Можно использовать только одну арифметическую операцию')
     elif plus_cord !=-1:
         try:
-            number1=float(user_text_wo[:plus_cord])
-            number2=float(user_text_wo[plus_cord+1::])
+            number1=float(user_text[:plus_cord])
+            number2=float(user_text[plus_cord+1::])
             update.message.reply_text(number1+number2)
         except ValueError:
-            update.message.reply_text('Pls enter the numbers on format number1+number2 or number1-number or number1/number2 or number1/number2')
+            update.message.reply_text('Формат выражения: Сколько будет один плюс два или сколько будет три и два умножить на шесть и восемь')
     elif minus_cord !=-1:
         try:
-            number1=float(user_text_wo[:minus_cord])
-            number2=float(user_text_wo[minus_cord+1::])
+            number1=float(user_text[:minus_cord])
+            number2=float(user_text[minus_cord+1::])
             update.message.reply_text(number1-number2)
         except ValueError:
-            update.message.reply_text('Pls enter the numbers on format number1+number2 or number1-number or number1/number2 or number1/number2')
+            update.message.reply_text('Формат выражения: Сколько будет один плюс два или сколько будет три и два умножить на шесть и восемь')
     elif divide_cord !=-1:
         try:
-            number1=float(user_text_wo[:divide_cord])
-            number2=float(user_text_wo[divide_cord+1::])
+            number1=float(user_text[:divide_cord])
+            number2=float(user_text[divide_cord+1::])
             if number2==0:
-                update.message.reply_text('divide by zero')
+                update.message.reply_text('Серьёзно ? хочешь поделить на ноль ?')
             else:
                 update.message.reply_text(number1/number2)
         except ValueError:
-            update.message.reply_text('Pls enter the numbers on format number1+number2 or number1-number or number1/number2 or number1/number2')
+            update.message.reply_text('Формат выражения: Сколько будет один плюс два или сколько будет три и два умножить на шесть и восемь')
     elif multiply_cord !=-1:
         try:
-            number1=float(user_text_wo[:multiply_cord])
-            number2=float(user_text_wo[multiply_cord+1::])
+            number1=float(user_text[:multiply_cord])
+            number2=float(user_text[multiply_cord+1::])
             update.message.reply_text(number1*number2)
         except ValueError:
-            update.message.reply_text('Pls enter the numbers on format number1+number2 or number1-number or number1/number2 or number1/number2')
+            update.message.reply_text('Формат выражения: Сколько будет один плюс два или сколько будет три и два умножить на шесть и восемь')
 
 
 def wordcount (bot,update):
